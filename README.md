@@ -11,20 +11,19 @@ PhiltzメンバーがAIエージェントに与える指示ドキュメントを
 各ディレクトリにメンバーごとの指示ファイルが格納されています。
 
 ```
-├── ouchiarata/
-│   └── CLAUDE.md    # Claude Code 用の指示ファイル
+├── ouchiarata/              # 各メンバー名フォルダがホームディレクトリとする
+│   └── path-to-project/     # このフォルダ内は各プロジェクトのルートディレクトリとする
+│       ├── CLAUDE.md        # Claude Code 用の指示ファイル
+│       └── AGENTS.md        # Codex CLI 等の指示ファイル
 └── ...
 ```
 
 ## Usage
 
 `CLAUDE.md`は[Claude Code](https://docs.anthropic.com/en/docs/claude-code)がプロジェクトのコンテキストとして読み込む設定ファイルです。
+`AGENTS.md`は[Codex CLI](https://developers.openai.com/codex)や[GitHub Copilot](https://github.com/features/copilot)、[Cursor](https://cursor.com/)などがプロジェクトの指示として読み込むファイルです。
 
-自分のディレクトリ内の`CLAUDE.md`を`~/.claude/CLAUDE.md`にコピーまたはシンボリックリンクすることで、全プロジェクト共通の指示として適用できます。
-
-```bash
-ln -sf /path/to/agent-instructions/<your-name>/CLAUDE.md ~/.claude/CLAUDE.md
-```
+`membername/path-to-project/CLAUDE.md`は、**リポジトリルート**に配置することで、`membername/.claude/`は`~./claude`に配置することで、共通の指示として適用できます。
 
 ## Connect with Us
 
