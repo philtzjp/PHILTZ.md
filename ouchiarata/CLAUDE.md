@@ -20,7 +20,7 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 8. MUST define all types in files within a dedicated directory
 9. SHOULD objectify variable names to normalize them into single words (e.g., `worksName` -> `works.name`)
 10. MUST use a modular monolith architecture
-11. NEVER use prefixes such as `NUXT_` or `NUXT_PUBLIC_` for environment variable names
+11. NEVER use prefixes such as `NUXT_` or `NUXT_PUBLIC_` and `VITE_` for environment variable names
 12. NEVER write or format inline code within directives as multi-line (it causes errors and won't work)
 
 ## Packages
@@ -29,7 +29,7 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 3. IF using Firebase -> MUST use `firebase-admin`; NEVER use client packages
 4. IF processing dates -> MUST use `date-fns`
 5. IF implementing AI-related features -> SHOULD prefer Vercel AI SDK
-6. IF implementing `Slack` / `Discord` / `Microsoft Teams` / `GitHub` integrations -> MUST use Vercel Labs Chat SDK
+6. IF implementing `Slack`, `Discord`, `Microsoft Teams`, `GitHub`, `Telegram`, `Linear` integrations -> MUST use Vercel Labs Chat SDK
 7. IF using `unkey` -> MUST use the v2 SDK
 
 ## Google Analytics
@@ -55,9 +55,10 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 3. IF bulk find-and-replace is preferable -> SHOULD write a `.js` script inside `temp/`, execute it, then delete the script
 4. NEVER run `npm run dev` in the background; MUST prompt the user to run it
 5. MUST introduce Biome & ESLint Vue and run format commands as appropriate
-6. MUST always respond in Japanese
-7. IF a service version change is deemed necessary -> MUST update `VERSION` based on Semantic Versioning and create `llm/version/${version}.md`
-8. IF architecture changes -> MUST update the Mermaid diagram in `./llm/ARCHITECTURE.md`
+6. NEVER run `biome check --fix --unsafe` on `.vue` files (Biome cannot analyze Vue template scope, causing false positives like `_` prefix renaming)
+7. MUST always respond in Japanese
+8. IF a service version change is deemed necessary -> MUST update `VERSION` based on Semantic Versioning and create `llm/version/${version}.md`
+9. IF architecture changes -> MUST update the Mermaid diagram in `./llm/ARCHITECTURE.md`
 
 ## Commit Messages
 1. MUST use the format `type: description (in Japanese, short sentence)`
