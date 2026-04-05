@@ -1,12 +1,3 @@
-PROJECT_NAME=`${プロジェクト名}`
-HOSTING_DOMAIN=`https://${ドメイン}`
-AUTHER=`Arata Ouchi (${Original SIN Architecture または Philtz})`
-AUTHER_XID=`@ouchiarata`
-AUTHER_URL=`https://${osa.xyz または philtz.com}$`
-PAGE_TITLE=`${ページタイトル}`
-SHORT_DESCRIPTION=`${サイト内キャッチコピー等に使用できる短い説明}`
-LONG_DESCRIPTION=`${ページデスクリプション等に使用できる正式な説明}`
-
 The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be interpreted as described in RFC 2119.
 
 # Code Rules
@@ -62,12 +53,19 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 
 ## Commit Messages
 1. MUST use the format `type: description (in Japanese, short sentence)`
-2. MUST perform a dry run (`git commit --dry-run`) before committing, present the commit message to the user, and MUST only execute after receiving approval
-3. NEVER add `Co-Authored-By`
+2. For monorepos: MUST use the format `type(scope): description (in Japanese, short sentence)`
+3. MUST split commits by logical scope (package, feature); NEVER bulk-commit unrelated changes together
+4. MUST analyze `git diff` per file to determine author:
+   - Only Claude-generated changes -> MUST set author and committer to Claude (`GIT_COMMITTER_NAME="Claude" GIT_COMMITTER_EMAIL="noreply@anthropic.com" git commit --author="Claude <noreply@anthropic.com>"`)
+   - Contains user-edited changes -> MUST NOT override author or committer
+   - When uncertain -> SHOULD ask the user
+5. NEVER add `Co-Authored-By`
+6. NEVER use `git add .` or `git add -A`
+7. NEVER mix unrelated changes in a single commit
 
 | Prefix | Usage |
 |---|---|
-| `feat` | Adding a new feature |
+| `feat` | New feature |
 | `fix` | Bug fix |
 | `perf` | Performance improvement |
 | `refactor` | Code improvement without functional changes |
@@ -78,12 +76,41 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 | `ci` | CI/CD configuration changes |
 | `build` | Build configuration changes |
 
+## Git Operations
+1. MUST run `git fetch --prune` before any git operation (commit, push, branch creation, merge, rebase)
+2. MUST check if current branch has been merged into default branch; IF merged -> warn user and suggest switching
+3. MUST check if remote tracking branch still exists; IF deleted -> warn user
+4. MUST check if local branch is behind remote; IF behind -> suggest `git pull --rebase`
+5. IF local branch diverged from remote -> SHOULD warn user, suggest rebase or merge
+6. NEVER silently switch branches without user confirmation
+7. NEVER run `git pull` or `git rebase` without user approval
+8. NEVER delete local branches without user confirmation
+
+## Test Responsibility
+1. MUST create and run E2E tests after implementing a new user-facing feature, significant UI change, or user flow modification
+2. MUST use agent-browser as the primary E2E testing tool; fall back to Playwright only for interactions agent-browser cannot handle (canvas manipulation, fine-grained mouse sequences, touch gestures, network interception, multi-page/cross-origin flows, WebSocket/SSE assertions)
+3. IF falling back to Playwright -> MUST note in the test file why agent-browser was insufficient
+4. MUST NOT trigger for: pure backend/API changes, documentation-only changes, config/dependency updates, refactors with no behavioral change
+5. NEVER skip writing tests for a new user-facing feature
+6. NEVER use Playwright when agent-browser can handle the interaction
+7. NEVER write tests that depend on timing (`sleep`) — MUST use explicit wait conditions
+
+## TypeScript Monorepo
+1. MUST follow Turborepo + workspace (pnpm / npm) best practices
+2. MUST detect package manager from lock file (`pnpm-lock.yaml` -> pnpm, `package-lock.json` -> npm); use consistently
+3. MUST follow `apps/` (deployable applications) + `packages/` (shared libraries & config) separation
+4. NEVER place deployable apps in `packages/`; NEVER place shared libraries in `apps/`
+5. MUST use scoped package names with `@<org>/` prefix; all internal packages MUST have `"private": true`
+6. MUST define `exports` in each package's `package.json`; prefer `exports` over `main`
+7. MUST create shared TypeScript config in `packages/typescript-config/`; each package MUST extend it
+8. MUST create `turbo.json` with dependency-aware task pipeline
+9. MUST use workspace protocol for internal dependencies (`workspace:*` for pnpm, `*` for npm)
+10. Default to JIT (Just-in-Time) compilation pattern; switch to compiled (`tsc` -> `dist/`) only when explicitly requested
+11. NEVER create nested packages; NEVER install Turborepo globally — use `npx turbo` or root devDependency
+
 ## Migration Procedure
 1. MUST create an API to retrieve the number of data records subject to migration
 2. MUST create an API to perform the migration and execute a Dry Run
 3. IF pre-fetched data count == Dry Run changed count -> proceed to step 4
    ELSE -> MUST fix and re-run
 4. MUST execute the migration, then delete the API
-
-# Prohibited Actions
-1. NEVER deploy to Vercel or perform any operations that affect the production environment
