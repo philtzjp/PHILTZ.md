@@ -24,6 +24,16 @@ commit-msg:
           exit 1
         fi
 
+        if echo "$COMMIT_MSG" | grep -qE '[()（）\[\]]'; then
+          echo "かっこ類は使用できません。補足情報はコミットメッセージから省いてください [$COMMIT_MSG]"
+          exit 1
+        fi
+
+        if echo "$COMMIT_MSG" | grep -qiE 'フェーズ|[Pp]hase'; then
+          echo "「フェーズ」「Phase」は使用できません。具体的な変更内容を記述してください [$COMMIT_MSG]"
+          exit 1
+        fi
+
         MSG_LINES=$(echo "$COMMIT_MSG" | sed '/^$/d' | wc -l | tr -d ' ')
         if [ "$MSG_LINES" -gt 1 ]; then
           echo "コミットメッセージは1行にしてください [$COMMIT_MSG]"
