@@ -29,6 +29,15 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 3. `ad_storage`, `ad_user_data`, `ad_personalization` SHOULD be `granted` by default
 4. IF user selects "Do not consent" -> MUST update advertising-related values to `denied`
 
+## Environment Variables
+1. MUST use `dotenvx` for `.env` file encryption and injection; startup command MUST be `dotenvx run -- <command>`
+2. MUST define all environment variables in a single `env.ts` using `zod` schema (`envSchema`)
+3. MUST validate with `envSchema.safeParse(process.env)` at startup; IF validation fails -> MUST log field errors and `process.exit(1)`
+4. MUST export a typed `env` object and `Env` type (`z.infer<typeof envSchema>`) from `env.ts`
+5. NEVER reference `process.env` directly outside `env.ts`; all other files MUST use `import { env } from "@/env"`
+6. Default values MUST only be defined via `.default()` within the zod schema in `env.ts`; NEVER use `||` or `??` fallbacks elsewhere
+7. `.env.example` is unnecessary; the zod schema in `env.ts` serves as the single source of truth for variable names, types, defaults, and validation rules
+
 ## API Design
 1. MUST conform to OpenAPI
 2. Error response structure MUST conform to RFC 9457
@@ -42,8 +51,7 @@ The keywords "MUST", "NEVER", "SHOULD", and "MAY" in this document are to be int
 
 # Operational Rules
 1. MUST record all data models in `llm/models.yaml`; IF implementation changes -> MUST update this file
-2. IF environment variables change -> MUST update `.env.example`
-3. IF bulk find-and-replace is preferable -> SHOULD write a `.js` script inside `temp/`, execute it, then delete the script
+2. IF bulk find-and-replace is preferable -> SHOULD write a `.js` script inside `temp/`, execute it, then delete the script
 4. MUST introduce Biome & ESLint Vue and run format commands as appropriate
 5. NEVER run `biome check --fix --unsafe` on `.vue` files (Biome cannot analyze Vue template scope, causing false positives like `_` prefix renaming)
 6. MUST always respond in Japanese
