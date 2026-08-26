@@ -19,7 +19,8 @@ description: "コミット、プッシュ、ブランチ作成/切り替え/削�
       - Cursor (Composer / Cloud Agent): `git commit --author="Cursor Agent <cursoragent@cursor.com>" -m "<message>"`
    - author 名は実行環境のエージェント種別（Codex / Claude / Cursor Agent）を、email は各ベンダーのエージェント用アドレスを表す。実際に動作しているエージェント種別と一致する行を使用し、他エージェントの例を流用しない
    - IF: 一部でもユーザーによる変更がある; THEN MUST: 通常の `git commit` を使用する。
-   - IF: Cursor Cloud Agent 環境で `commit-msg.cursor.co-author` hook により未承認の `Co-authored-by:` が自動付与される; THEN MUST: hook を無効化するか `git commit --no-verify` を使用し、`Co-Authored-By` 禁止ルールを維持する
+   - IF: Cursor Cloud Agent 環境で `commit-msg.cursor.co-author` hook により未承認の `Co-authored-by:` が自動付与される; THEN MUST: `cursor-hook-authoring` に従い `commit-msg.cursor.co-author-strip` 連鎖を install して除去する; NEVER: `git commit --no-verify` で Hook を迂回する（`git-guard` 等で deny される場合がある）
+   - IF: 履歴修正で force push が必要; THEN MUST: `GIT_GUARD_ALLOW_FORCE_PUSH=1` を一時設定して push し、作業後に unset する
 8. NEVER: `Co-Authored-By` を追加しない
 9. NEVER: `git add .` や `git add -A` を使用しない
 10. NEVER: 無関係な変更を1つのコミットに混在させない

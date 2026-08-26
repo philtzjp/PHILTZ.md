@@ -118,9 +118,19 @@ assignees: ""
 補足・参考リンク・注意点（任意）。
 ```
 
+## 改変記録の例（cursor-hook-authoring / commit-and-git）
+
+Cursor Cloud Agent が lefthook より後に `commit-msg.cursor.co-author` を実行し `Co-authored-by:` を付与する事象に対し、asna リポジトリで strip 連鎖 Hook を実装した。ローカル改変内容:
+
+- `commit-and-git`: `--no-verify` 回避策を削除し、strip 連鎖への委譲と `GIT_GUARD_ALLOW_FORCE_PUSH` を明記
+- `cursor-hook-authoring`（新規）: 実行順、`commit-msg.cursor.co-author-strip` 命名、install スクリプト、lefthook 多層防御、テスト手順
+
+有用と判断した場合は本リポジトリ（`philtzjp/skills`）へ Issue を起票する（本件: Issue #27）。
+
 ## 関連スキル
 
 - `commit-and-git`: コミットメッセージ・PR 操作の規約
+- `cursor-hook-authoring`: Cursor Cloud の commit-msg hook 連鎖と Co-authored-by 除去
 - `issue-branch-pr-flow`: パッチ以外の実装作業の Issue / PR フロー
 - `AGENTS.md` / `CLAUDE.md` のベース署名規約: Issue / PR 本文・コメントの署名形式
 - `refresh-skills`: スキル改変後の整合性検査

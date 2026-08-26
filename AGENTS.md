@@ -16,6 +16,7 @@
 | `issue-branch-pr-flow` | パッチバグフィクス以外の実装作業（Issue 起票・専用ブランチ作成・PR 作成・マージ前確認）時 |
 | `japanese-writing` | 日本語での応答・文章作成・編集・校正、コミットメッセージ・PR 説明・ドキュメント・UI 文言を書く時 |
 | `commit-and-git` | コミット・プッシュ・ブランチ作成/切替/削除・マージ・リベース時 |
+| `cursor-hook-authoring` | Cursor Cloud Agent 環境で Git hook 連鎖（commit-msg、Co-authored-by 付与・除去）を設計・実装・検証する時 |
 | `data-migration` | データマイグレーション（一括変換・スキーマ移行）の設計・実行時 |
 | `api-design` | API エンドポイント（OpenAPI スキーマ、ルーティング、認証方式等）の追加・変更時 |
 | `typescript-monorepo` | 新規パッケージ追加・`turbo.json` / `pnpm-workspace.yaml` / `tsconfig` 編集時 |
